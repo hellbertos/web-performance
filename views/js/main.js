@@ -570,10 +570,17 @@ function updatePositions() {
   for (i = 0; i < 5; i++) {
       constArray.push(Math.sin((scrollPos / 1250) + i % 5));
     }
+  var winWidth = window.innerWidth;
+  var leftPush = 0;
 
   for (var i = 0; i < cachedLength; i++) {
     var phase = constArray[i % 5];
-    items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
+    //items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
+    leftPush = items[i].basicLeft + 100 * phase - (winWidth/2);
+    items[i].style.transform = 'translateX('+ leftPush +'px)';
+    //console.log("left push: "+leftPush+" and counter is: "+i+" and PHASE is: "+phase);
+    //console.log("Left px orig is>>> "+items[i].style.left);
+    //console.info("The basicLeft xPos is: "+items[i].basicLeft+100);
   }
 
   // User Timing API to the rescue again. Seriously, it's worth learning.
