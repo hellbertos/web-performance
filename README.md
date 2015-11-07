@@ -27,7 +27,7 @@ While I read about gzip compression and setting longer expire times for HTTP hea
 
 The main optimization to begin with here, which was discussed in class, was to remove the added calculations and intracacy of the determineDx function since it wasn't necessary when the sizeSwitcher function could merely return a value to be used as a percentage. A much more elegant and significantly quicker solution!
 
-'''javascript
+```javascript
 // Set cases to return the new percentage width based on the slider input
     function sizeSwitcher (size) {
       switch(size) {
@@ -43,14 +43,14 @@ The main optimization to begin with here, which was discussed in class, was to r
     }
     // Get the new size percentage and set it to var newsize
     var newsize = sizeSwitcher(size);
-'''
+```
 
 Next up was to move the selection of the pizza containers outside of the for loop, so the js engine didn't need to parse the document each time through the loop. I changed the selection method to getElementByClassName instead of querySelectorAll as there is a small boost in performance using that former method; as per ( [https://jsperf.com/getelementsbyclassname-vs-queryselectorall/18]).
 
 An additional small optimization was to use the length method only once on the returned DOM element array and store it in a variable to use within the for loop. Again, the assumption being the js interpreter wouldn't need to look it up each time. This was actually not very perceptable when using Dev Tools. It seemed as though the bars dipped a bit lower, but extensive reading made me feel as though this was a helpful addition.
 
 The relevant code:
-'''javascript
+```javascript
 var allPizzas = document.getElementsByClassName("randomPizzaContainer");
     var allPizzasLength = allPizzas.length;
 
@@ -58,7 +58,7 @@ var allPizzas = document.getElementsByClassName("randomPizzaContainer");
     for (var i = 0; i < allPizzasLength; i++) {
       allPizzas[i].style.width = newsize+'%';
     }
-'''
+```
 The Result:
 ![Pizza Size Slider Shot](https://github.com/hellbertos/web-performance/blob/my-updates/img/pizza-slider-bigger.JPG)
 
@@ -76,7 +76,7 @@ The next optimization, and very large performance gain, was when I added "will-c
 The last optimization I made was (at the suggestion of Udacity Mentor mcs) was to move the pizzas using transform rather than manipulating the left value. This was interesting because, initially, the pizzas were all moved several hundred pixels over and overlapping. My solution was to query the window width, divide it by 2.25 and alternate positive and negative values to get an acceptable number and spread of pizzas on the screen at any given time.
 
 The relevant code:
-'''javascript
+```javascript
 var items = document.getElementsByClassName('mover');
   var scrollPos = document.body.scrollTop;
   var cachedLength = items.length;
@@ -102,6 +102,6 @@ var items = document.getElementsByClassName('mover');
     } else {
       items[i].style.transform = 'translateX('+ phase * -winWidth/2.25 +'px)';
     }
-'''
+```
 The result:
 ![Sliding Pizza Timeline](https://github.com/hellbertos/web-performance/blob/my-updates/img/pizza-scroll-timeline.jpg)
