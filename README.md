@@ -9,7 +9,7 @@ The challenge at hand was to optimize certain portions of an existing website fo
 
 ### Part 1: Optimize index.html
 
-The first most obvious part here was to get the images down to a reasonable size! In particular, Cam's meme was enormous at 263K or so. However, all the images could be optimized to shrink their file sizes to dramatically decrease the load on the network. I was even able to shave a few K off the small, round profile pic without major impact. Initially, I used this [gulp npm](https://github.com/sindresorhus/gulp-imagemin with stream-limit implementation)
+The first most obvious part here was to get the images down to a reasonable size! In particular, Cam's meme was enormous at 263K or so. However, all the images could be optimized to shrink their file sizes to dramatically decrease the load on the network. I was even able to shave a few K off the small, round profile pic without major impact. Initially, I used this [gulp npm](https://www.npmjs.com/package/gulp-image-optimization)
 
 It did a good job, but, since I'm adept at Photoshop, I reopened them and found that could fine tune out several more K w/ Photoshop's tools. Obviously, this wouldn't be practical on a large project, but I felt it worth noting.
 
