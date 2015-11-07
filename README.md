@@ -27,7 +27,7 @@ While I read about gzip compression and setting longer expire times for HTTP hea
 
 The main optimization to begin with here, which was discussed in class, was to remove the added calculations and intracacy of the determineDx function since it wasn't necessary when the sizeSwitcher function could merely return a value to be used as a percentage. A much more elegant and significantly quicker solution!
 
-'''js
+'''javascript
 // Set cases to return the new percentage width based on the slider input
     function sizeSwitcher (size) {
       switch(size) {
@@ -50,7 +50,7 @@ Next up was to move the selection of the pizza containers outside of the for loo
 An additional small optimization was to use the length method only once on the returned DOM element array and store it in a variable to use within the for loop. Again, the assumption being the js interpreter wouldn't need to look it up each time. This was actually not very perceptable when using Dev Tools. It seemed as though the bars dipped a bit lower, but extensive reading made me feel as though this was a helpful addition.
 
 The relevant code:
-'''js
+'''javascript
 var allPizzas = document.getElementsByClassName("randomPizzaContainer");
     var allPizzasLength = allPizzas.length;
 
@@ -76,7 +76,7 @@ The next optimization, and very large performance gain, was when I added "will-c
 The last optimization I made was (at the suggestion of Udacity Mentor mcs) was to move the pizzas using transform rather than manipulating the left value. This was interesting because, initially, the pizzas were all moved several hundred pixels over and overlapping. My solution was to query the window width, divide it by 2.25 and alternate positive and negative values to get an acceptable number and spread of pizzas on the screen at any given time.
 
 The relevant code:
-'''js
+'''javascript
 var items = document.getElementsByClassName('mover');
   var scrollPos = document.body.scrollTop;
   var cachedLength = items.length;
