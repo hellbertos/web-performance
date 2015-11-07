@@ -60,7 +60,7 @@ var allPizzas = document.getElementsByClassName("randomPizzaContainer");
     }
 '''
 The Result:
-![Pizza Size Slider Shot](https://github.com/hellbertos/web-performance/blob/my-updates/img/pizza-resize.jpg)
+![Pizza Size Slider Shot](https://github.com/hellbertos/web-performance/blob/my-updates/img/pizza-slider-bigger.JPG)
 
 
 ### Part C: The Dreaded Sliding Pizzas
