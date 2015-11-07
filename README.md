@@ -3,11 +3,11 @@
 
 The challenge at hand was to optimize certain portions of an existing website for different metrics.
 
-A) Optimize the index.html page to achive a Page Speed Insights ranking of 90 or better on both mobile and desktop.
-B) Optimize the slider widget on views/pizza.html to resize in < 5ms as indicated in the console.
-C) Optimize the views/pizza.html to achieve 60FPS or better on the scroll event.
+1. Optimize the index.html page to achive a Page Speed Insights ranking of 90 or better on both mobile and desktop.
+2. Optimize the slider widget on views/pizza.html to resize in < 5ms as indicated in the console.
+3. Optimize the views/pizza.html to achieve 60FPS or better on the scroll event.
 
-### Part A: Optimize index.html
+### Part 1: Optimize index.html
 
 The first most obvious part here was to get the images down to a reasonable size! In particular, Cam's meme was enormous at 263K or so. However, all the images could be optimized to shrink their file sizes to dramatically decrease the load on the network. I was even able to shave a few K off the small, round profile pic without major impact. Initially, I used this [gulp npm](https://github.com/sindresorhus/gulp-imagemin with stream-limit implementation)
 
@@ -23,7 +23,7 @@ While I read about gzip compression and setting longer expire times for HTTP hea
 
 ![page speed mobile](https://github.com/hellbertos/web-performance/blob/my-updates/img/psi-mobile.jpg)
 
-### Part B: Optimize Slider Widget
+### Part 2: Optimize Slider Widget
 
 The main optimization to begin with here, which was discussed in class, was to remove the added calculations and intracacy of the determineDx function since it wasn't necessary when the sizeSwitcher function could merely return a value to be used as a percentage. A much more elegant and significantly quicker solution!
 
@@ -63,7 +63,7 @@ The Result:
 ![Pizza Size Slider Shot](https://github.com/hellbertos/web-performance/blob/my-updates/img/pizza-slider-bigger.JPG)
 
 
-### Part C: The Dreaded Sliding Pizzas
+### Part 3: The Dreaded Sliding Pizzas
 
 The first step in the quest for 60FPS on scroll for these sliding pizzas of doom was reduce the number of pizzas being created in the first place. The initial loop created 200 pizza... 200 PIZZAS!! There were only about 28 being shown, by my count, so, to err on the safe side, I reduced the number of pizzas to 32. Helpful, but still a long way to go.
 
