@@ -1,73 +1,107 @@
-## Website Performance Optimization portfolio project
+# My Website Optimization Project
+## Lesson 4 - Udacity FEND
 
-Your challenge, if you wish to accept it (and we sure hope you will), is to optimize this online portfolio for speed! In particular, optimize the critical rendering path and make this page render as quickly as possible by applying the techniques you've picked up in the [Critical Rendering Path course](https://www.udacity.com/course/ud884).
+The challenge at hand was to optimize certain portions of an existing website for different metrics.
 
-To get started, check out the repository, inspect the code,
+A) Optimize the index.html page to achive a Page Speed Insights ranking of 90 or better on both mobile and desktop.
+B) Optimize the slider widget on views/pizza.html to resize in < 5ms as indicated in the console.
+C) Optimize the views/pizza.html to achieve 60FPS or better on the scroll event.
 
-### Getting started
+### Part A: Optimize index.html
 
-####Part 1: Optimize PageSpeed Insights score for index.html
+The first most obvious part here was to get the images down to a reasonable size! In particular, Cam's meme was enormous at 263K or so. However, all the images could be optimized to shrink their file sizes to dramatically decrease the load on the network. I was even able to shave a few K off the small, round profile pic without major impact. Initially, I used this [gulp npm](https://github.com/sindresorhus/gulp-imagemin with stream-limit implementation)
 
-Some useful tips to help you get started:
+It did a good job, but, since I'm adept at Photoshop, I reopened them and found that could fine tune out several more K w/ Photoshop's tools. Obviously, this wouldn't be practical on a large project, but I felt it worth noting.
 
-1. Check out the repository
-1. To inspect the site on your phone, you can run a local server
+My next step was to optimize the css. First I added the media attribute to the print.css stylesheet and set its value to "print", of course, alerting the browser it doesn't need it for first render. Then I minified and inlined the necessary CSS into the head of the document; eliminating a request and a couple K of CSS.
 
-  ```bash
-  $> cd /path/to/your-project-folder
-  $> python -m SimpleHTTPServer 8080
-  ```
+On to the JS... I used jsUglify to minimize the code and added async attribute to the script tags to allow the page to load and scripts to run when ready.
 
-1. Open a browser and visit localhost:8080
-1. Download and install [ngrok](https://ngrok.com/) to make your local server accessible remotely.
+While I read about gzip compression and setting longer expire times for HTTP headers, I did not implement them as I'd already, with the above optimizations, achived scores of 96 for both desktop and mobile in Page Speed Insights.
 
-  ``` bash
-  $> cd /path/to/your-project-folder
-  $> ngrok 8080
-  ```
+![page speed desktop](https://github.com/altercation/solarized/raw/master/img/solarized-palette.png)
 
-1. Copy the public URL ngrok gives you and try running it through PageSpeed Insights! Optional: [More on integrating ngrok, Grunt and PageSpeed.](http://www.jamescryer.com/2014/06/12/grunt-pagespeed-and-ngrok-locally-testing/)
+![page speed mobile](https://github.com/altercation/solarized/raw/master/img/solarized-palette.png)
 
-Profile, optimize, measure... and then lather, rinse, and repeat. Good luck!
+### Part B: Optimize Slider Widget
 
-####Part 2: Optimize Frames per Second in pizza.html
+The main optimization to begin with here, which was discussed in class, was to remove the added calculations and intracacy of the determineDx function since it wasn't necessary when the sizeSwitcher function could merely return a value to be used as a percentage. A much more elegant and significantly quicker solution!
 
-To optimize views/pizza.html, you will need to modify views/js/main.js until your frames per second rate is 60 fps or higher. You will find instructive comments in main.js. 
+'''js
+// Set cases to return the new percentage width based on the slider input
+    function sizeSwitcher (size) {
+      switch(size) {
+        case "1":
+          return 25;
+        case "2":
+          return 33.33;
+        case "3":
+          return 50;
+        default:
+          console.log("bug in sizeSwitcher");
+      }
+    }
+    // Get the new size percentage and set it to var newsize
+    var newsize = sizeSwitcher(size);
+'''
 
-You might find the FPS Counter/HUD Display useful in Chrome developer tools described here: [Chrome Dev Tools tips-and-tricks](https://developer.chrome.com/devtools/docs/tips-and-tricks).
+Next up was to move the selection of the pizza containers outside of the for loop, so the js engine didn't need to parse the document each time through the loop. I changed the selection method to getElementByClassName instead of querySelectorAll as there is a small boost in performance using that former method; as per ( [https://jsperf.com/getelementsbyclassname-vs-queryselectorall/18]).
 
-### Optimization Tips and Tricks
-* [Optimizing Performance](https://developers.google.com/web/fundamentals/performance/ "web performance")
-* [Analyzing the Critical Rendering Path](https://developers.google.com/web/fundamentals/performance/critical-rendering-path/analyzing-crp.html "analyzing crp")
-* [Optimizing the Critical Rendering Path](https://developers.google.com/web/fundamentals/performance/critical-rendering-path/optimizing-critical-rendering-path.html "optimize the crp!")
-* [Avoiding Rendering Blocking CSS](https://developers.google.com/web/fundamentals/performance/critical-rendering-path/render-blocking-css.html "render blocking css")
-* [Optimizing JavaScript](https://developers.google.com/web/fundamentals/performance/critical-rendering-path/adding-interactivity-with-javascript.html "javascript")
-* [Measuring with Navigation Timing](https://developers.google.com/web/fundamentals/performance/critical-rendering-path/measure-crp.html "nav timing api"). We didn't cover the Navigation Timing API in the first two lessons but it's an incredibly useful tool for automated page profiling. I highly recommend reading.
-* <a href="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/eliminate-downloads.html">The fewer the downloads, the better</a>
-* <a href="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/optimize-encoding-and-transfer.html">Reduce the size of text</a>
-* <a href="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/image-optimization.html">Optimize images</a>
-* <a href="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching.html">HTTP caching</a>
+An additional small optimization was to use the length method only once on the returned DOM element array and store it in a variable to use within the for loop. Again, the assumption being the js interpreter wouldn't need to look it up each time. This was actually not very perceptable when using Dev Tools. It seemed as though the bars dipped a bit lower, but extensive reading made me feel as though this was a helpful addition.
 
-### Customization with Bootstrap
-The portfolio was built on Twitter's <a href="http://getbootstrap.com/">Bootstrap</a> framework. All custom styles are in `dist/css/portfolio.css` in the portfolio repo.
+The relevant code:
+'''js
+var allPizzas = document.getElementsByClassName("randomPizzaContainer");
+    var allPizzasLength = allPizzas.length;
 
-* <a href="http://getbootstrap.com/css/">Bootstrap's CSS Classes</a>
-* <a href="http://getbootstrap.com/components/">Bootstrap's Components</a>
+    // Iterate through the pre-fetched elements and batch reset their width to the new size
+    for (var i = 0; i < allPizzasLength; i++) {
+      allPizzas[i].style.width = newsize+'%';
+    }
+'''
+The Result:
+![Pizza Size Slider Shot](https://github.com/altercation/solarized/raw/master/img/solarized-palette.png)
 
-### Sample Portfolios
 
-Feeling uninspired by the portfolio? Here's a list of cool portfolios I found after a few minutes of Googling.
+### Part C: The Dreaded Sliding Pizzas
 
-* <a href="http://www.reddit.com/r/webdev/comments/280qkr/would_anybody_like_to_post_their_portfolio_site/">A great discussion about portfolios on reddit</a>
-* <a href="http://ianlunn.co.uk/">http://ianlunn.co.uk/</a>
-* <a href="http://www.adhamdannaway.com/portfolio">http://www.adhamdannaway.com/portfolio</a>
-* <a href="http://www.timboelaars.nl/">http://www.timboelaars.nl/</a>
-* <a href="http://futoryan.prosite.com/">http://futoryan.prosite.com/</a>
-* <a href="http://playonpixels.prosite.com/21591/projects">http://playonpixels.prosite.com/21591/projects</a>
-* <a href="http://colintrenter.prosite.com/">http://colintrenter.prosite.com/</a>
-* <a href="http://calebmorris.prosite.com/">http://calebmorris.prosite.com/</a>
-* <a href="http://www.cullywright.com/">http://www.cullywright.com/</a>
-* <a href="http://yourjustlucky.com/">http://yourjustlucky.com/</a>
-* <a href="http://nicoledominguez.com/portfolio/">http://nicoledominguez.com/portfolio/</a>
-* <a href="http://www.roxannecook.com/">http://www.roxannecook.com/</a>
-* <a href="http://www.84colors.com/portfolio.html">http://www.84colors.com/portfolio.html</a>
+The first step in the quest for 60FPS on scroll for these sliding pizzas of doom was reduce the number of pizzas being created in the first place. The initial loop created 200 pizza... 200 PIZZAS!! There were only about 28 being shown, by my count, so, to err on the safe side, I reduced the number of pizzas to 32. Helpful, but still a long way to go.
+
+As we learned in class, it is important to query the state of the DOM outside of the loop then batch process as efficiently as possible, so it was time to look at the loop. The next obivous optimization was to move the phase calculation out of the loop since it had a layout triggering scrollTop within it. That could be queried once outside the loop. Two small additional improvements were to select elements using getElementById and to use the length method on it once and store in a var; as explained above.
+
+Next, in what I thought was a very interesting approach (Full credit to Udacity Mentor mcs - that person helped me out a ton!), was to declare an array and store the phase calculation results in it, so that they could be referenced rather than continually calculated within the loop. When inspected, those numbers repeat, so it isn't necessary to continue to replicate them. Very cool and decent performance gain. Still well over 60FPS though.
+
+The next optimization, and very large performance gain, was when I added "will-change: transform" to the pizza element's "mover" class declaration in the stylesheet. That gave an enormous boost to performance and pretty much put me mostly under 60FPS.
+
+The last optimization I made was (at the suggestion of Udacity Mentor mcs) was to move the pizzas using transform rather than manipulating the left value. This was interesting because, initially, the pizzas were all moved several hundred pixels over and overlapping. My solution was to query the window width, divide it by 2.25 and alternate positive and negative values to get an acceptable number and spread of pizzas on the screen at any given time.
+
+The relevant code:
+'''js
+var items = document.getElementsByClassName('mover');
+  var scrollPos = document.body.scrollTop;
+  var cachedLength = items.length;
+
+  /** Declare an array to store the phase values generated by the the for loop which
+      follows. Push those numbers into the array to decrease load on the browser to continually
+      look those values up.
+      Credit to mcs, Udacity Mentor, from this post:
+      https://discussions.udacity.com/t/project-4-how-do-i-optimize-the-background-pizzas-for-loop/36302
+  **/
+  var constArray = [];
+  for (i = 0; i < 5; i++) {
+      constArray.push(Math.sin((scrollPos / 1250) + i % 5));
+  	}
+  var winWidth = window.innerWidth;
+
+
+  for (var i = 0; i < cachedLength; i++) {
+    var phase = constArray[i % 5];
+    if( i % 2 !== 0){
+      items[i].style.transform = 'translateX('+ phase * winWidth/2.25 +'px)';
+      //items[i].style.transform = 'translateX('+ leftPush +'px)';
+    } else {
+      items[i].style.transform = 'translateX('+ phase * -winWidth/2.25 +'px)';
+    }
+'''
+The result:
+![Sliding Pizza Timeline](https://github.com/altercation/solarized/raw/master/img/solarized-palette.png)
