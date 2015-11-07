@@ -65,7 +65,7 @@ The Result:
 
 ### Part 3: The Dreaded Sliding Pizzas
 
-The first step in the quest for 60FPS on scroll for these sliding pizzas of doom was reduce the number of pizzas being created in the first place. The initial loop created 200 pizza... 200 PIZZAS!! There were only about 28 being shown, by my count, so, to err on the safe side, I reduced the number of pizzas to 32. Helpful, but still a long way to go.
+The first step in the quest for 60FPS on scroll for these sliding pizzas of doom was reduce the number of pizzas being created in the first place. The initial loop created 200 pizzas... 200 PIZZAS!! There were only about 28 being shown, by my count, so, to err on the safe side, I reduced the number of pizzas to 32. Helpful, but still a long way to go.
 
 As we learned in class, it is important to query the state of the DOM outside of the loop then batch process as efficiently as possible, so it was time to look at the loop. The next obivous optimization was to move the phase calculation out of the loop since it had a layout triggering scrollTop within it. That could be queried once outside the loop. Two small additional improvements were to select elements using getElementById and to use the length method on it once and store in a var; as explained above.
 
