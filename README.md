@@ -19,9 +19,9 @@ On to the JS... I used jsUglify to minimize the code and added async attribute t
 
 While I read about gzip compression and setting longer expire times for HTTP headers, I did not implement them as I'd already, with the above optimizations, achived scores of 96 for both desktop and mobile in Page Speed Insights.
 
-![page speed desktop](https://github.com/altercation/solarized/raw/master/img/solarized-palette.png)
+![page speed desktop](https://github.com/hellbertos/web-performance/blob/my-updates/img/psi-desktop.jpg)
 
-![page speed mobile](https://github.com/altercation/solarized/raw/master/img/solarized-palette.png)
+![page speed mobile](https://github.com/hellbertos/web-performance/blob/my-updates/img/psi-mobile.jpg)
 
 ### Part B: Optimize Slider Widget
 
@@ -60,7 +60,7 @@ var allPizzas = document.getElementsByClassName("randomPizzaContainer");
     }
 '''
 The Result:
-![Pizza Size Slider Shot](https://github.com/altercation/solarized/raw/master/img/solarized-palette.png)
+![Pizza Size Slider Shot](https://github.com/hellbertos/web-performance/blob/my-updates/img/pizza-resize.jpg)
 
 
 ### Part C: The Dreaded Sliding Pizzas
@@ -104,4 +104,4 @@ var items = document.getElementsByClassName('mover');
     }
 '''
 The result:
-![Sliding Pizza Timeline](https://github.com/altercation/solarized/raw/master/img/solarized-palette.png)
+![Sliding Pizza Timeline](https://github.com/hellbertos/web-performance/blob/my-updates/img/pizza-scroll-timeline.jpg)
