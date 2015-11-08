@@ -1,3 +1,4 @@
+'use strict';
 /*Skip to content
 This repository
 Search
@@ -439,7 +440,11 @@ var resizePizzas = function(size) {
   // Returns the size difference to change a pizza element from one size to another. Called by changePizzaSlices(size).
   function determineDx (elem, size) {
     var oldwidth = elem.offsetWidth;
-    var windowwidth = document.querySelector("#randomPizzas").offsetWidth;
+    /**
+      Replace querySelector with getElementsByClassName for performance boost according to
+        https://jsperf.com/getelementsbyclassname-vs-queryselectorall/18
+    **/
+    var windowwidth = document.getElementById("randomPizzas").offsetWidth;
     var oldsize = oldwidth / windowwidth;
 
     // TODO: change to 3 sizes? no more xl?
@@ -574,14 +579,10 @@ function updatePositions() {
 
   for (var i = 0; i < cachedLength; i++) {
     var phase = constArray[i % 5];
-    if( i % 2 !== 0){
-      items[i].style.transform = 'translateX('+ phase * winWidth/2.25 +'px)';
-      //items[i].style.transform = 'translateX('+ leftPush +'px)';
-    } else {
-      items[i].style.transform = 'translateX('+ phase * -winWidth/2.25 +'px)';
-    }
-
-
+    /**
+        Reposition pizzas using transform: translateX as per Udacity Reviewer
+    **/
+    items[i].style.transform = 'translateX('+ 100 * phase +'px)';
   }
 
   // User Timing API to the rescue again. Seriously, it's worth learning.
@@ -601,16 +602,34 @@ window.addEventListener('scroll', updatePositions);
 document.addEventListener('DOMContentLoaded', function() {
   var cols = 8;
   var s = 256;
+  var viewportHeight = window.innerHeight;
+
+  /**
+      Get the viewport height to determine the number of rows necessary to display then multiply it
+      by the number of columns to determine how many pizzas are needed to display, as per Udacity Reviewer suggestion
+  **/
+  var rowsNeeded = Math.floor(viewportHeight / 256) +  1;
+  var pizzasNeeded = cols * rowsNeeded;
+
+  /**
+      Create the var elem outside of the for loop to prevent its continued creation each time through the loop; as per Udacity Reviewer
+  **/
+  var elem;
+  var movingPizzasDiv = document.getElementById("movingPizzas1");
   // Reduce Number of generated pizzas to approximately the number actually shown on-screen
-  for (var i = 0; i < 32; i++) {
-    var elem = document.createElement('img');
+  for (var i = 0; i < pizzasNeeded; i++) {
+    elem = document.createElement('img');
     elem.className = 'mover';
     elem.src = "images/pizza.png";
     elem.style.height = "100px";
     elem.style.width = "73.333px";
-    elem.basicLeft = (i % cols) * s;
+    /**
+        Replace the "basicLeft" position value with a style.left declaration and add "px" units.
+        Addtionally, use getElementById rather than querySelector to boost performance, as per Udcacity Reviewer.
+    **/
+    elem.style.left = (i % cols) * s + 'px';
     elem.style.top = (Math.floor(i / cols) * s) + 'px';
-    document.querySelector("#movingPizzas1").appendChild(elem);
+    movingPizzasDiv.appendChild(elem);
   }
   updatePositions();
 });
