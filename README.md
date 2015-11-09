@@ -72,7 +72,7 @@ Next, in what I thought was a very interesting approach (Full credit to Udacity 
 
 The next optimization, and very large performance gain, was when I added "will-change: transform" to the pizza element's "mover" class declaration in the stylesheet. That gave an enormous boost to performance and pretty much put me mostly under 60FPS. As an additional optimization in concert with the preceeding, backface-visibility: hidden was added to boost performance in browsers which support hardware acceleration.
 
-The last optimization I made was (at the suggestion of Udacity Mentor mcs) was to move the pizzas using transform rather than manipulating the left value. This was interesting because, initially, the pizzas were all moved several hundred pixels over and overlapping. My solution was to query the window width, divide it by 2.25 and alternate positive and negative values to get an acceptable number and spread of pizzas on the screen at any given time.
+The last optimization I made was (at the suggestion of Udacity Mentor mcs) was to move the pizzas using transform rather than manipulating the left value. This was interesting because, initially, the pizzas were all moved several hundred pixels over and overlapping.
 
 The relevant code:
 ```javascript
